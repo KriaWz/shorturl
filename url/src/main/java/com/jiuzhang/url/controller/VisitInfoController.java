@@ -1,10 +1,7 @@
 package com.jiuzhang.url.controller;
 
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jiuzhang.url.annotation.Limit;
 import com.jiuzhang.url.common.LimitType;
-import com.jiuzhang.url.config.ThreadPoolConfigProperties;
 import com.jiuzhang.url.entity.VisitInfo;
 import com.jiuzhang.url.service.VisitInfoService;
 import com.jiuzhang.url.vo.LatestSumMax;
@@ -15,11 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.LongAdder;
-
 /**
  * <p>
  *  前端控制器
