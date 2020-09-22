@@ -12,9 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -47,6 +45,12 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
     public List<LatestSumMax> getList(){
         List<LatestSumMax> visitInfos = baseMapper.countList();
         return visitInfos;
+    }
+
+    @Override
+    public List<VisitInfo> listLatestVisitInfo() {
+        List<VisitInfo> visitInfoList = baseMapper.listLatestVisitInfo();
+        return visitInfoList;
     }
 
 }

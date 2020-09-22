@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Random;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @auther: WZ
@@ -50,7 +48,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
                     redisTemplate.opsForValue().set(shortExist + "sum" , 0,60,TimeUnit.MINUTES);
                 }
                 redisTemplate.opsForValue().increment(shortExist+"sum");
-                String fullUrl = "http://localhost:8080/"+shortExist;
+                String fullUrl = "http://localhost:8080/s/"+shortExist;
                 urlVo.setUrl(fullUrl);
                 return urlVo;
             }
@@ -63,7 +61,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
                 redisTemplate.opsForValue().set(shortUrlMeta+"sum",0,60,TimeUnit.MINUTES);
                 redisTemplate.opsForValue().set(longUrlMeta,shortUrlMeta,60,TimeUnit.MINUTES);
                 redisTemplate.opsForValue().set(shortUrlMeta,longUrlMeta,60,TimeUnit.MINUTES);
-                String fullUrl = "http://localhost:8080/"+shortUrlMeta;
+                String fullUrl = "http://localhost:8080/s/"+shortUrlMeta;
                 urlVo.setUrl(fullUrl);
                 return urlVo;
             }
@@ -87,7 +85,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
                         System.out.println(Thread.currentThread().getName());
                     }
                 });
-                String fullurl = "http://localhost:8080/"+shortUrl;
+                String fullurl = "http://localhost:8080/s/"+shortUrl;
                 urlVo.setUrl(fullurl);
                 return urlVo;
             }

@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.LongAdder;
  * @since 2020-09-07
  */
 @RestController
-@RequestMapping("/visitInfo")
+@RequestMapping("/views")
 @CrossOrigin
 public class VisitInfoController {
 
@@ -43,9 +43,9 @@ public class VisitInfoController {
         return list;
     }
 
-    @GetMapping("/list")
+    @GetMapping("/visitors")
     public List<VisitInfo> infoList(){
-        List<VisitInfo> visitInfoList = visitInfoService.list();
+        List<VisitInfo> visitInfoList = visitInfoService.listLatestVisitInfo();
         return visitInfoList;
     }
 

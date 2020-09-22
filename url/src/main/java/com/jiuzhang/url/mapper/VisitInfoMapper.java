@@ -22,4 +22,6 @@ public interface VisitInfoMapper extends BaseMapper<VisitInfo> {
 
     List<LatestSumMax> countList();
 
+    List<VisitInfo> listLatestVisitInfo();
+
 }
