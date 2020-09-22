@@ -21,4 +21,6 @@ public interface VisitInfoService extends IService<VisitInfo> {
     void setVisitInfo(String shortUrl, HttpServletRequest request);
 
     List<LatestSumMax> getList();
+
+    List<VisitInfo> listLatestVisitInfo();
 }

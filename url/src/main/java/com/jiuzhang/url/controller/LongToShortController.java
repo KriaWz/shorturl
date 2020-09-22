@@ -31,7 +31,7 @@ public class LongToShortController {
         return longToShort;
     }
 
-    @PostMapping("/transfer")
+    @PostMapping("/transform")
     public UrlVo longTransfer(@RequestBody UrlVo urlVo, HttpServletRequest request){
         String Url = urlVo.getUrl();
         UrlVo longToShort = longToShortService.transFer(Url,request);

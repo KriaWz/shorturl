@@ -17,7 +17,7 @@ import java.io.IOException;
  * @Description:
  */
 @Controller
-@RequestMapping("/")
+@RequestMapping("/s")
 @Api
 @CrossOrigin
 public class ShortToLongController {

@@ -9,5 +9,8 @@
         GROUP BY long_url
         order by sum DESC LIMIT 10
     </select>
+    <select id="listLatestVisitInfo" resultType="com.jiuzhang.url.entity.VisitInfo">
+        select * from `visit_info` limit 10
+    </select>
 
 </mapper>
