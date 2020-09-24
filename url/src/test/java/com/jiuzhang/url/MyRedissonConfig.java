@@ -1,4 +1,4 @@
-package com.jiuzhang.url.config;
+package com.jiuzhang.url;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -14,7 +14,7 @@ import java.io.IOException;
  * @Date: 2020/9/9 14:53
  * @Description:
  */
-@Configuration
+
 public class  MyRedissonConfig {
 
 
