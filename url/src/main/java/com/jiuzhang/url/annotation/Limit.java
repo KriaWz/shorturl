@@ -5,7 +5,7 @@ import com.jiuzhang.url.common.LimitType;
 import java.lang.annotation.*;
 
 /**
- * @auther: WZ
+ * @author 黄文镇
  * @Date: 2020/9/13 17:31
  * @Description:
  */
@@ -29,6 +29,9 @@ public @interface Limit {
      */
     String prefix() default "";
 
+    /**
+     * 每秒放入令牌桶个数
+     */
     int speed();
     /**
      * 一定时间内最多访问次数

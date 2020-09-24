@@ -20,7 +20,7 @@ import java.io.Serializable;
 /**
  * @Auther: WZ
  * @Date: 2020/8/3 01:35
- * @Description:
+ * @Description: Redis配置信息存放
  */
 
 @EnableConfigurationProperties(CacheProperties.class)
@@ -72,6 +72,11 @@ public class MyRedisConfig {
         return redisTemplate;
     }
 
+    /**
+     * lua脚本RedisTemplate配置
+     * @param redisConnectionFactory
+     * @return
+     */
     @Bean
     public RedisTemplate<String, Serializable> limitRedisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Serializable> template = new RedisTemplate<>();

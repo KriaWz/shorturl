@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @auther: WZ
  * @Date: 2020/9/9 11:09
- * @Description:
+ * @Description: UrlVo
  */
 @Data
 @AllArgsConstructor

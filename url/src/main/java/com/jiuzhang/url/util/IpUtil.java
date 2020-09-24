@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 /**
  * @auther: WZ
  * @Date: 2020/9/8 16:08
- * @Description:
+ * @Description: 获取请求IP地址
  */
 public class IpUtil {
     public static String getIpAddr(HttpServletRequest request) {

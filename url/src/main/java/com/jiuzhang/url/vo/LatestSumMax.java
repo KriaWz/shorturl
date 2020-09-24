@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * @auther: WZ
  * @Date: 2020/9/13 10:47
- * @Description:
+ * @Description: 最近访问数量
  */
 @Data
 public class LatestSumMax implements Serializable {

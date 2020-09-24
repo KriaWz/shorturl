@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @auther: WZ
  * @Date: 2020/9/9 15:28
- * @Description:
+ * @Description: 线程池配置信息存放
  */
 @ConfigurationProperties(prefix = "tinyurl.thread")
 @Data

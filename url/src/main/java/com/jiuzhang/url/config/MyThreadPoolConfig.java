@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @auther: WZ
  * @Date: 2020/9/9 15:23
- * @Description:
+ * @Description: 线程池配置
  */
 @Configuration
 @EnableAsync

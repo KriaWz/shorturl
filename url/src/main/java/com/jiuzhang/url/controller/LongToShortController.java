@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @auther: WZ
  * @Date: 2020/9/7 14:59
- * @Description:
+ * @Description: 长网址/短网址 相互转换
  */
 @RestController
 @RequestMapping("/url")
@@ -25,12 +25,18 @@ public class LongToShortController {
     @Autowired
     private LongToShortService longToShortService;
 
-    @GetMapping("/list/{id}")
-    public LongToShort searchLong(@PathVariable String id){
-        LongToShort longToShort = longToShortService.getById(id);
-        return longToShort;
-    }
+//    @GetMapping("/list/{id}")
+//    public LongToShort searchLong(@PathVariable String id){
+//        LongToShort longToShort = longToShortService.getById(id);
+//        return longToShort;
+//    }
 
+    /**
+     * transform接口
+     * @param urlVo
+     * @param request
+     * @return json：{"url" : "http://www.baidu.com"}
+     */
     @PostMapping("/transform")
     public UrlVo longTransfer(@RequestBody UrlVo urlVo, HttpServletRequest request){
         String Url = urlVo.getUrl();

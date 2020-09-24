@@ -28,8 +28,14 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
     @Autowired
     private RedisTemplate redisTemplate;
 
+    /**
+     * 存放访客信息
+     * @param shortUrl
+     * @param request
+     */
     @Override
     public void setVisitInfo(String shortUrl, HttpServletRequest request) {
+        //直接从redis里读取，因为之前短转长已经存放键值对
         String longUrl = (String) redisTemplate.opsForValue().get(shortUrl);
         VisitInfo visitInfo = new VisitInfo();
         visitInfo.setShortUrl(shortUrl);
@@ -41,12 +47,20 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
         baseMapper.insert(visitInfo);
     }
 
+    /**
+     * 返回对应最近访问最多10条短网址长网址信息
+     * @return
+     */
     @Override
     public List<LatestSumMax> getList(){
         List<LatestSumMax> visitInfos = baseMapper.countList();
         return visitInfos;
     }
 
+    /**
+     * 返回对应最近访问10条访客记录
+     * @return
+     */
     @Override
     public List<VisitInfo> listLatestVisitInfo() {
         List<VisitInfo> visitInfoList = baseMapper.listLatestVisitInfo();

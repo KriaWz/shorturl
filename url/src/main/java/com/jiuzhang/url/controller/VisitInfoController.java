@@ -14,12 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 /**
- * <p>
- *  前端控制器
- * </p>
- *
  * @author wenzhen
  * @since 2020-09-07
+ * @Description 短网址访问信息
  */
 @RestController
 @RequestMapping("/views")
@@ -29,6 +26,10 @@ public class VisitInfoController {
     @Autowired
     private VisitInfoService visitInfoService;
 
+    /**
+     * 最常访问的10个短网址及对应长网址
+     * @return
+     */
     @Limit(speed = 3000, count = 3000,limitType = LimitType.IP)
     @GetMapping("/countLatest")
     public List<LatestSumMax> latestSumMaxList(){
@@ -36,6 +37,10 @@ public class VisitInfoController {
         return list;
     }
 
+    /**
+     * 最近10条访客信息
+     * @return
+     */
     @GetMapping("/visitors")
     public List<VisitInfo> infoList(){
         List<VisitInfo> visitInfoList = visitInfoService.listLatestVisitInfo();

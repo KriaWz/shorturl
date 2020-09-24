@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * @auther: WZ
  * @Date: 2020/9/20 13:21
- * @Description:
+ * @Description: 随机生成6位短网址
  */
 public class RandomUtil {
 

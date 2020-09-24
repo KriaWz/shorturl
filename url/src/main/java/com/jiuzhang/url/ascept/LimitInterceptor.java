@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @auther: WZ
  * @Date: 2020/9/13 17:32
- * @Description:
+ * @Description: 限流切面，注解编程
  */
 @Aspect
 @Configuration
@@ -46,15 +46,17 @@ public class LimitInterceptor {
 
     /**
      * @param pjp
-     * @author fu
+     * @author wz
      * @description 切面
-     * @date 2020/4/8 13:04
+     * @date 2020/9/15 13:04
      */
     @Around("execution(public * *(..)) && @annotation(com.jiuzhang.url.annotation.Limit)")
     public Object interceptor(ProceedingJoinPoint pjp) {
+        //根据上下文信息提取 HttpRequest
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
+        //获取注解信息
         Limit limitAnnotation = method.getAnnotation(Limit.class);
         LimitType limitType = limitAnnotation.limitType();
         String name = limitAnnotation.name();

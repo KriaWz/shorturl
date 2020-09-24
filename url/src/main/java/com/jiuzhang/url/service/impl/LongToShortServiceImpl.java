@@ -35,12 +35,19 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
 
     private final static Logger logger = LoggerFactory.getLogger(LongToShortServiceImpl.class);
 
+    /**
+     * 长/短网址转换
+     * @param longUrl
+     * @param request
+     * @return
+     */
     @Override
-    //@Cacheable(value = {"longToshort"},key = "#root.method.name")
     public UrlVo transFer(String longUrl, HttpServletRequest request) {
         UrlVo urlVo = new UrlVo();
+        //传入网址验证是否为有效长网址
         if( !longUrl.startsWith("http://localhost") && (longUrl.startsWith("http://")
                 || longUrl.startsWith("https://"))){
+            //先从Redis读取
             String shortExist = (String) redisTemplate.opsForValue().get(longUrl);
             redisTemplate.expire(longUrl,60,TimeUnit.MINUTES);
             if(!StringUtils.isEmpty(shortExist)){
@@ -52,9 +59,11 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
                 urlVo.setUrl(fullUrl);
                 return urlVo;
             }
+            //redis中没有，查询MySQL是否有长网址信息
             QueryWrapper<LongToShort> wrapperLong = new QueryWrapper<>();
             wrapperLong.eq("long_url",longUrl);
             LongToShort LongData = baseMapper.selectOne(wrapperLong);
+            //有，返回长网址对应短网址
             if( LongData != null ){
                 String longUrlMeta = LongData.getLongUrl();
                 String shortUrlMeta = LongData.getShortUrl();
@@ -65,13 +74,17 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
                 urlVo.setUrl(fullUrl);
                 return urlVo;
             }
+            //没有，存放long_to_short信息
             String ipAddr = IpUtil.getIpAddr(request);
             LongToShort longToShort = new LongToShort();
             String shortUrl = RandomUtil.BaseTrans(longUrl);
+            //查询短网址是否重复，不重复存放，重复重新生成
             QueryWrapper<LongToShort> wrapper = new QueryWrapper<>();
             wrapper.eq("short_url", shortUrl);
             LongToShort one = baseMapper.selectOne(wrapper);
             if(one == null){
+                //存放 redis
+                // longUrl:shortUrl  shortUrl:longUrl  shortUrlSum:sum
                 redisTemplate.opsForValue().set(longUrl,shortUrl,60,TimeUnit.MINUTES);
                 redisTemplate.opsForValue().set(shortUrl,longUrl,60,TimeUnit.MINUTES);
                 redisTemplate.opsForValue().set(shortUrl+"sum",0,60,TimeUnit.MINUTES);
@@ -94,16 +107,23 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             }
             return null;
         }
+        //转换的是短网址：返回对应短网址对应长网址
         if(longUrl.startsWith("http://localhost:8080")){
             String s = longUrl.substring(22);
             String url = shortToLong(s);
             urlVo.setUrl(url);
             return urlVo;
         }
+        //都不是上面的一种，返回格式错误
         logger.error("格式错误");
         return null;
     }
 
+    /**
+     * 短网址转长网址
+     * @param shortUrl
+     * @return
+     */
     @Override
     public String shortToLong(String shortUrl) {
         String longUrl = (String) redisTemplate.opsForValue().get(shortUrl);
