@@ -2,6 +2,7 @@ package com.jiuzhang.url.controller;
 
 import com.jiuzhang.url.annotation.Limit;
 import com.jiuzhang.url.common.LimitType;
+import com.jiuzhang.url.common.Result;
 import com.jiuzhang.url.entity.LongToShort;
 import com.jiuzhang.url.service.LongToShortService;
 import com.jiuzhang.url.vo.UrlVo;
@@ -25,12 +26,6 @@ public class LongToShortController {
     @Autowired
     private LongToShortService longToShortService;
 
-//    @GetMapping("/list/{id}")
-//    public LongToShort searchLong(@PathVariable String id){
-//        LongToShort longToShort = longToShortService.getById(id);
-//        return longToShort;
-//    }
-
     /**
      * transform接口
      * @param urlVo
@@ -40,7 +35,8 @@ public class LongToShortController {
     @PostMapping("/transform")
     public UrlVo longTransfer(@RequestBody UrlVo urlVo, HttpServletRequest request){
         String Url = urlVo.getUrl();
-        UrlVo longToShort = longToShortService.transFer(Url,request);
+        UrlVo longToShort = longToShortService.transfer(Url,request);
+        //return Result.ofSuccess(longToShort).setCode(200);
         return longToShort;
     }
 

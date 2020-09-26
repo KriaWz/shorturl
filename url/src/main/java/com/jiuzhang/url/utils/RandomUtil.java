@@ -1,4 +1,4 @@
-package com.jiuzhang.url.util;
+package com.jiuzhang.url.utils;
 
 import java.util.Random;
 

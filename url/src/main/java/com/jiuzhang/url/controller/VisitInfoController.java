@@ -2,6 +2,7 @@ package com.jiuzhang.url.controller;
 
 import com.jiuzhang.url.annotation.Limit;
 import com.jiuzhang.url.common.LimitType;
+import com.jiuzhang.url.common.Result;
 import com.jiuzhang.url.entity.VisitInfo;
 import com.jiuzhang.url.service.VisitInfoService;
 import com.jiuzhang.url.vo.LatestSumMax;
@@ -34,6 +35,7 @@ public class VisitInfoController {
     @GetMapping("/countLatest")
     public List<LatestSumMax> latestSumMaxList(){
         List<LatestSumMax> list = visitInfoService.getList();
+        //return Result.ofSuccess(list).setCode(200);
         return list;
     }
 
@@ -44,6 +46,7 @@ public class VisitInfoController {
     @GetMapping("/visitors")
     public List<VisitInfo> infoList(){
         List<VisitInfo> visitInfoList = visitInfoService.listLatestVisitInfo();
+        //return Result.ofSuccess(visitInfoList).setCode(200);
         return visitInfoList;
     }
 

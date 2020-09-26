@@ -1,4 +1,4 @@
-package com.jiuzhang.url.util;
+package com.jiuzhang.url.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;

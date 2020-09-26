@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface LongToShortService extends IService<LongToShort> {
 
-    UrlVo transFer(String longUrl, HttpServletRequest request);
+    UrlVo transfer(String longUrl, HttpServletRequest request);
 
     String shortToLong(String shortUrl);
 }

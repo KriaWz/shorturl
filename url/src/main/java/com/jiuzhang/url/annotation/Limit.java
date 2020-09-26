@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * @author 黄文镇
  * @Date: 2020/9/13 17:31
- * @Description:
+ * @Description: 改成RateLimiter
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -31,6 +31,7 @@ public @interface Limit {
 
     /**
      * 每秒放入令牌桶个数
+     * 可以改成float或者double
      */
     int speed();
     /**

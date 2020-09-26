@@ -2,7 +2,7 @@ package com.jiuzhang.url.ascept;
 
 import com.jiuzhang.url.annotation.Limit;
 import com.jiuzhang.url.common.LimitType;
-import com.jiuzhang.url.util.IpUtil;
+import com.jiuzhang.url.utils.IpUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
