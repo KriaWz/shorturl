@@ -1,11 +1,7 @@
 package com.jiuzhang.url.controller;
 
-import com.jiuzhang.url.annotation.Limit;
-import com.jiuzhang.url.common.LimitType;
-import com.jiuzhang.url.common.Result;
-import com.jiuzhang.url.entity.LongToShort;
 import com.jiuzhang.url.service.LongToShortService;
-import com.jiuzhang.url.vo.UrlVo;
+import com.jiuzhang.url.vo.UrlVO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +29,9 @@ public class LongToShortController {
      * @return json：{"url" : "http://www.baidu.com"}
      */
     @PostMapping("/transform")
-    public UrlVo longTransfer(@RequestBody UrlVo urlVo, HttpServletRequest request){
+    public UrlVO longTransfer(@RequestBody UrlVO urlVo, HttpServletRequest request){
         String Url = urlVo.getUrl();
-        UrlVo longToShort = longToShortService.transfer(Url,request);
+        UrlVO longToShort = longToShortService.transfer(Url,request);
         //return Result.ofSuccess(longToShort).setCode(200);
         return longToShort;
     }

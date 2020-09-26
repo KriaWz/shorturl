@@ -2,7 +2,7 @@ package com.jiuzhang.url.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiuzhang.url.entity.LongToShort;
-import com.jiuzhang.url.vo.UrlVo;
+import com.jiuzhang.url.vo.UrlVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface LongToShortService extends IService<LongToShort> {
 
-    UrlVo transfer(String longUrl, HttpServletRequest request);
+    UrlVO transfer(String longUrl, HttpServletRequest request);
 
     String shortToLong(String shortUrl);
 }
