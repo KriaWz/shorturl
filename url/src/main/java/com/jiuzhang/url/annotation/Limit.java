@@ -3,6 +3,7 @@ package com.jiuzhang.url.annotation;
 import com.jiuzhang.url.common.LimitType;
 
 import java.lang.annotation.*;
+import java.math.BigDecimal;
 
 /**
  * @author 黄文镇
@@ -33,7 +34,8 @@ public @interface Limit {
      * 每秒放入令牌桶个数
      * 可以改成float或者double
      */
-    int speed();
+    double speed();
+
     /**
      * 一定时间内最多访问次数
      */

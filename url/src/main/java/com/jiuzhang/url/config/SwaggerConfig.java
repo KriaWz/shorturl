@@ -28,7 +28,7 @@ public class SwaggerConfig {
                 .build();
     }
 
-    //基本信息的配置，信息会在api文档上显示
+    // 基本信息的配置，信息会在api文档上显示
     private ApiInfo webApiInfo(){
 
         return new ApiInfoBuilder()

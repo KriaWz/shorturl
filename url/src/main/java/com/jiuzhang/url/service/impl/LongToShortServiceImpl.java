@@ -7,7 +7,7 @@ import com.jiuzhang.url.mapper.LongToShortMapper;
 import com.jiuzhang.url.service.LongToShortService;
 import com.jiuzhang.url.utils.IpUtil;
 import com.jiuzhang.url.utils.RandomUtil;
-import com.jiuzhang.url.utils.RedisUtils;
+import com.jiuzhang.url.utils.RedisUtil;
 import com.jiuzhang.url.utils.UrlUtil;
 import com.jiuzhang.url.vo.UrlVO;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
     private ThreadPoolExecutor executor;
 
     @Autowired
-    private RedisUtils redisUtil;
+    private RedisUtil redisUtil;
 
     @Value("${shorturl.prefix}")
     private String shortUrlPrefix;
@@ -46,10 +46,9 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
      * @return
      */
     @Override
-    // transfer （注释开头加" " 空格）
     public UrlVO transfer(String url, HttpServletRequest request)  {
         UrlVO urlVo = new UrlVO();
-        //传入网址验证是否为有效长网址 （独立出一个工具类）
+        // 传入网址验证是否为有效长网址 （独立出一个工具类）
         // if非法处理，直接返回，避免缩进
         if (UrlUtil.isShortUrl(url)) {
             String s = url.substring(24);
@@ -58,11 +57,11 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             return urlVo;
         }
         if (!UrlUtil.isLongUrl(url)){
-            //都不是上面的一种，返回格式错误
+            // 都不是上面的一种，返回格式错误
             logger.error("格式错误");
             return null;
         }
-        //先从Redis读取
+        // 先从Redis读取
         String shortExist = (String) redisUtil.get(url);
         redisUtil.expire(url,60);
         if (!StringUtils.isEmpty(shortExist)) {
@@ -71,11 +70,11 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             urlVo.setUrl(fullUrl);
             return urlVo;
         }
-        //redis中没有，查询MySQL是否有长网址信息
+        // redis中没有，查询MySQL是否有长网址信息
         QueryWrapper<LongToShort> wrapperLong = new QueryWrapper<>();
         wrapperLong.eq("long_url",url);
         LongToShort LongData = baseMapper.selectOne(wrapperLong);
-        //有，返回长网址对应短网址
+        // 有，返回长网址对应短网址
         if (LongData != null) {
             String longUrlMeta = LongData.getLongUrl();
             String shortUrlMeta = LongData.getShortUrl();
@@ -84,16 +83,16 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             urlVo.setUrl(fullUrl);
             return urlVo;
         }
-        //没有，存放long_to_short信息
+        // 没有，存放long_to_short信息
         String ipAddr = IpUtil.getIpAddr(request);
         LongToShort longToShort = new LongToShort();
         String shortUrl = RandomUtil.BaseTrans(url);
-        //查询短网址是否重复，不重复存放，重复重新生成
+        // 查询短网址是否重复，不重复存放，重复重新生成
         QueryWrapper<LongToShort> wrapper = new QueryWrapper<>();
         wrapper.eq("short_url", shortUrl);
         LongToShort one = baseMapper.selectOne(wrapper);
         if (one == null) {
-            //存放 redis
+            // 存放 redis
             // longUrl:shortUrl  shortUrl:longUrl  shortUrlSum:sum
             // redis操作抽取出来
             redisUtil.setLongAndShort(url, shortUrl, 60);

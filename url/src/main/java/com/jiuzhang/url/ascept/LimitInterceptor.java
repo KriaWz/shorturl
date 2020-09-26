@@ -22,6 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,16 +53,18 @@ public class LimitInterceptor {
      */
     @Around("execution(public * *(..)) && @annotation(com.jiuzhang.url.annotation.Limit)")
     public Object interceptor(ProceedingJoinPoint pjp) {
-        //根据上下文信息提取 HttpRequest
+        // 根据上下文信息提取 HttpRequest
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
-        //获取注解信息
+        // 获取注解信息
         Limit limitAnnotation = method.getAnnotation(Limit.class);
         LimitType limitType = limitAnnotation.limitType();
         String name = limitAnnotation.name();
         String key;
-        int limitSpeed = limitAnnotation.speed();
+        double limitSpeed = limitAnnotation.speed();
+        BigDecimal bigDecimal = new BigDecimal(limitSpeed);
+        System.out.println(bigDecimal);
         int limitCount = limitAnnotation.count();
 
         /**
@@ -79,17 +82,23 @@ public class LimitInterceptor {
         }
         List<String> keys = new ArrayList<>();
         keys.add(StringUtils.join(limitAnnotation.prefix(), key));
-        keys.add(StringUtils.join("LastTime",key));
-        long currentTimeMillis = System.currentTimeMillis()/1000;
+        keys.add(StringUtils.join("LastTime", key));
+        long currentTimeMillis = System.currentTimeMillis() / 1000;
         try {
             DefaultRedisScript<Number> redisScript = new DefaultRedisScript<>();
             redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("redislimit.lua")));
             redisScript.setResultType(Number.class);
-            Number count = limitRedisTemplate.execute(redisScript, keys, limitSpeed, limitCount,currentTimeMillis,1);
+            Number count = limitRedisTemplate.execute(
+                redisScript,
+                keys,
+                bigDecimal.doubleValue(),
+                limitCount,
+                currentTimeMillis,
+                1);
             logger.info("Access try count is {} for name={} and key = {}", count, name, key);
-            if(count.intValue() == 1){
+            if (count.intValue() == 1) {
                 return pjp.proceed();
-            }else {
+            } else {
                 throw new RuntimeException("你已经被限制访问了");
             }
         } catch (Throwable e) {

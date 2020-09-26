@@ -34,7 +34,7 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
      */
     @Override
     public void setVisitInfo(String shortUrl, HttpServletRequest request) {
-        //直接从redis里读取，因为之前短转长已经存放键值对
+        // 直接从redis里读取，因为之前短转长已经存放键值对
         String longUrl = (String) redisTemplate.opsForValue().get(shortUrl);
         VisitInfo visitInfo = new VisitInfo();
         visitInfo.setShortUrl(shortUrl);

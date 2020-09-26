@@ -22,14 +22,14 @@ public class CodeGenerator {
 
         // 2、全局配置
         GlobalConfig gc = new GlobalConfig();
-        //String projectPath = System.getProperty("user.dir");
+        // String projectPath = System.getProperty("user.dir");
         gc.setOutputDir("E:\\项目\\shorturl\\url" + "/src/main/java");
 
         gc.setAuthor("wenzhen");
         gc.setOpen(false); //生成后是否打开资源管理器
         gc.setFileOverride(false); //重新生成时文件是否覆盖
 
-        //UserServie
+        // UserServie
         gc.setServiceName("%sService");    //去掉Service接口的首字母I
 
         gc.setIdType(IdType.ASSIGN_ID); //主键策略
@@ -50,9 +50,9 @@ public class CodeGenerator {
         // 4、包配置
         PackageConfig pc = new PackageConfig();
         pc.setModuleName("url"); //模块名
-        //包  com.atguigu.eduservice
+        // 包  com.atguigu.eduservice
         pc.setParent("com.jiuzhang");
-        //包  com.atguigu.eduservice.controller
+        // 包  com.atguigu.eduservice.controller
         pc.setController("controller");
         pc.setEntity("entity");
         pc.setService("service");

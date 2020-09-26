@@ -1,5 +1,7 @@
 package com.jiuzhang.url.controller;
 
+import com.jiuzhang.url.annotation.Limit;
+import com.jiuzhang.url.common.LimitType;
 import com.jiuzhang.url.service.LongToShortService;
 import com.jiuzhang.url.vo.UrlVO;
 import io.swagger.annotations.Api;
@@ -28,6 +30,7 @@ public class LongToShortController {
      * @param request
      * @return json：{"url" : "http://www.baidu.com"}
      */
+    @Limit(speed = 0.1, count = 1,limitType = LimitType.IP)
     @PostMapping("/transform")
     public UrlVO longTransfer(@RequestBody UrlVO urlVo, HttpServletRequest request){
         String Url = urlVo.getUrl();
