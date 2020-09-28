@@ -1,6 +1,8 @@
 package com.jiuzhang.url.vo;
 
 import lombok.Data;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
@@ -10,6 +12,7 @@ import java.io.Serializable;
  * @Description: 最近访问数量
  */
 @Data
+@Component
 public class LatestSumMax implements Serializable {
 
     private String longUrl;

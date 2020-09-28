@@ -5,6 +5,7 @@ import com.jiuzhang.url.mapper.VisitInfoMapper;
 import com.jiuzhang.url.service.VisitInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jiuzhang.url.utils.IpUtil;
+import com.jiuzhang.url.utils.RedisUtil;
 import com.jiuzhang.url.vo.LatestSumMax;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

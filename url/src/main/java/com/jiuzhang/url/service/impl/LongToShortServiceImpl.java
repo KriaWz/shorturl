@@ -7,7 +7,6 @@ import com.jiuzhang.url.mapper.LongToShortMapper;
 import com.jiuzhang.url.service.LongToShortService;
 import com.jiuzhang.url.utils.IpUtil;
 import com.jiuzhang.url.utils.RandomUtil;
-import com.jiuzhang.url.utils.RedisUtil;
 import com.jiuzhang.url.utils.UrlUtil;
 import com.jiuzhang.url.vo.UrlVO;
 import org.slf4j.Logger;
@@ -32,7 +31,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
     private ThreadPoolExecutor executor;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisService redisService;
 
     @Value("${shorturl.prefix}")
     private String shortUrlPrefix;
@@ -62,8 +61,8 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             return null;
         }
         // 先从Redis读取
-        String shortExist = (String) redisUtil.get(url);
-        redisUtil.expire(url,60);
+        String shortExist = (String) redisService.get(url);
+        redisService.expire(url,60);
         if (!StringUtils.isEmpty(shortExist)) {
             // 调用一个常量类型 + short （分不同的环境建立不同域名） application配置文件分环境
             String fullUrl = shortUrlPrefix + shortExist;
@@ -78,7 +77,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
         if (LongData != null) {
             String longUrlMeta = LongData.getLongUrl();
             String shortUrlMeta = LongData.getShortUrl();
-            redisUtil.setLongAndShort(longUrlMeta, shortUrlMeta, 60);
+            redisService.setLongAndShort(longUrlMeta, shortUrlMeta, 60);
             String fullUrl = shortUrlPrefix + shortUrlMeta;
             urlVo.setUrl(fullUrl);
             return urlVo;
@@ -95,7 +94,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             // 存放 redis
             // longUrl:shortUrl  shortUrl:longUrl  shortUrlSum:sum
             // redis操作抽取出来
-            redisUtil.setLongAndShort(url, shortUrl, 60);
+            redisService.setLongAndShort(url, shortUrl, 60);
             executor.execute(() -> {
                 longToShort.setLongUrl(url);
                 longToShort.setShortUrl(shortUrl);
@@ -120,8 +119,8 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
      */
     @Override
     public String shortToLong(String shortUrl) {
-        String longUrl = (String) redisUtil.get(shortUrl);
-        redisUtil.expire(shortUrl, 60);
+        String longUrl = (String) redisService.get(shortUrl);
+        redisService.expire(shortUrl, 60);
         if(!StringUtils.isEmpty(longUrl)){
             return longUrl;
         }
@@ -129,7 +128,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
         wrapper.eq("short_url", shortUrl);
         LongToShort one = baseMapper.selectOne(wrapper);
         longUrl = one.getLongUrl();
-        redisUtil.set(shortUrl, longUrl, 60);
+        redisService.set(shortUrl, longUrl, 60);
         return longUrl;
     }
 
