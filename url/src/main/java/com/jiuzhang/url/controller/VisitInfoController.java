@@ -2,8 +2,7 @@ package com.jiuzhang.url.controller;
 
 import com.jiuzhang.url.annotation.Limit;
 import com.jiuzhang.url.common.LimitType;
-import com.jiuzhang.url.common.Result;
-import com.jiuzhang.url.entity.VisitInfo;
+import com.jiuzhang.url.domain.VisitInfo;
 import com.jiuzhang.url.service.VisitInfoService;
 import com.jiuzhang.url.vo.LatestSumMax;
 import org.springframework.beans.factory.annotation.Autowired;

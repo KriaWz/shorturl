@@ -1,9 +1,7 @@
 package com.jiuzhang.url.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jiuzhang.url.entity.LongToShort;
-import com.jiuzhang.url.mapper.LongToShortMapper;
+import com.jiuzhang.url.domain.LongToShort;
+import com.jiuzhang.url.repo.LongToShortRepository;
 import com.jiuzhang.url.service.LongToShortService;
 import com.jiuzhang.url.utils.IpUtil;
 import com.jiuzhang.url.utils.RandomUtil;
@@ -17,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 /**
@@ -25,10 +25,13 @@ import java.util.concurrent.*;
  * @Description:
  */
 @Service
-public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongToShort> implements LongToShortService {
+public class LongToShortServiceImpl implements LongToShortService {
 
     @Autowired
     private ThreadPoolExecutor executor;
+
+    @Autowired
+    private LongToShortRepository longToShortRepository;
 
     @Autowired
     private RedisService redisService;
@@ -45,6 +48,7 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
      * @return
      */
     @Override
+    @Transactional
     public UrlVO transfer(String url, HttpServletRequest request)  {
         UrlVO urlVo = new UrlVO();
         // 传入网址验证是否为有效长网址 （独立出一个工具类）
@@ -70,13 +74,16 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             return urlVo;
         }
         // redis中没有，查询MySQL是否有长网址信息
-        QueryWrapper<LongToShort> wrapperLong = new QueryWrapper<>();
+        /*QueryWrapper<LongToShort> wrapperLong = new QueryWrapper<>();
         wrapperLong.eq("long_url",url);
-        LongToShort LongData = baseMapper.selectOne(wrapperLong);
+        LongToShort LongData = baseMapper.selectOne(wrapperLong);*/
+
+        Optional<LongToShort> LongDataOpt = longToShortRepository.findByLongUrl(url);
+
         // 有，返回长网址对应短网址
-        if (LongData != null) {
-            String longUrlMeta = LongData.getLongUrl();
-            String shortUrlMeta = LongData.getShortUrl();
+        if (LongDataOpt.isPresent()) {
+            String longUrlMeta = LongDataOpt.get().getLongUrl();
+            String shortUrlMeta = LongDataOpt.get().getShortUrl();
             redisService.setLongAndShort(longUrlMeta, shortUrlMeta, 60);
             String fullUrl = shortUrlPrefix + shortUrlMeta;
             urlVo.setUrl(fullUrl);
@@ -87,10 +94,14 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
         LongToShort longToShort = new LongToShort();
         String shortUrl = RandomUtil.BaseTrans(url);
         // 查询短网址是否重复，不重复存放，重复重新生成
+        /*
         QueryWrapper<LongToShort> wrapper = new QueryWrapper<>();
         wrapper.eq("short_url", shortUrl);
-        LongToShort one = baseMapper.selectOne(wrapper);
-        if (one == null) {
+        LongToShort one = baseMapper.selectOne(wrapper);*/
+
+        Optional<LongToShort> shortUrlOptional = longToShortRepository.findByShortUrl(shortUrl);
+
+        if (!shortUrlOptional.isPresent()) {
             // 存放 redis
             // longUrl:shortUrl  shortUrl:longUrl  shortUrlSum:sum
             // redis操作抽取出来
@@ -98,8 +109,11 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
             executor.execute(() -> {
                 longToShort.setLongUrl(url);
                 longToShort.setShortUrl(shortUrl);
-                longToShort.setFromIp(ipAddr);
-                baseMapper.insert(longToShort);
+                //longToShort.setFromIp(ipAddr);
+                //baseMapper.insert(longToShort);
+
+                longToShortRepository.save(longToShort);
+
                 System.out.println(Thread.currentThread().getName());
             });
             String fullUrl = shortUrlPrefix + shortUrl;
@@ -124,11 +138,21 @@ public class LongToShortServiceImpl extends ServiceImpl<LongToShortMapper, LongT
         if(!StringUtils.isEmpty(longUrl)){
             return longUrl;
         }
-        QueryWrapper<LongToShort> wrapper = new QueryWrapper<>();
+        /*QueryWrapper<LongToShort> wrapper = new QueryWrapper<>();
         wrapper.eq("short_url", shortUrl);
-        LongToShort one = baseMapper.selectOne(wrapper);
-        longUrl = one.getLongUrl();
-        redisService.set(shortUrl, longUrl, 60);
+        LongToShort one = baseMapper.selectOne(wrapper);*/
+
+        Optional<LongToShort> longUrlOptional = longToShortRepository.findByShortUrl(shortUrl);
+
+        if(longUrlOptional.isPresent()) {
+            longUrl =  longUrlOptional.get().getLongUrl();
+            redisService.set(shortUrl, longUrl, 60);
+        }
+        else {
+            longUrl = null;
+        }
+
+
         return longUrl;
     }
 

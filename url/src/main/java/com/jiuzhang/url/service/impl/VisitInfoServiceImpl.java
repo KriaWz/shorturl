@@ -1,29 +1,26 @@
 package com.jiuzhang.url.service.impl;
 
-import com.jiuzhang.url.entity.VisitInfo;
-import com.jiuzhang.url.mapper.VisitInfoMapper;
+import com.jiuzhang.url.domain.VisitInfo;
+import com.jiuzhang.url.repo.VisitInfoRepository;
 import com.jiuzhang.url.service.VisitInfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jiuzhang.url.utils.IpUtil;
-import com.jiuzhang.url.utils.RedisUtil;
 import com.jiuzhang.url.vo.LatestSumMax;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author wenzhen
- * @since 2020-09-07
- */
+
 @Service
-public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo> implements VisitInfoService {
+public class VisitInfoServiceImpl implements VisitInfoService {
+
+    @Autowired
+    private VisitInfoRepository visitInfoRepository;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -34,6 +31,7 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
      * @param request
      */
     @Override
+    @Transactional
     public void setVisitInfo(String shortUrl, HttpServletRequest request) {
         // 直接从redis里读取，因为之前短转长已经存放键值对
         String longUrl = (String) redisTemplate.opsForValue().get(shortUrl);
@@ -43,8 +41,10 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
         String ipAddr = IpUtil.getIpAddr(request);
         visitInfo.setFromIp(ipAddr);
         String referer = request.getHeader("Referer");
-        visitInfo.setFormUrl(referer);
-        baseMapper.insert(visitInfo);
+        visitInfo.setFromUrl(referer);
+        visitInfo.setGmtCreate(new Date());
+
+        visitInfoRepository.save(visitInfo);
     }
 
     /**
@@ -53,7 +53,8 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
      */
     @Override
     public List<LatestSumMax> getList(){
-        List<LatestSumMax> visitInfos = baseMapper.countList();
+        List<Object[]> visitInfoObjs = visitInfoRepository.findLatestSumMax();
+        List<LatestSumMax> visitInfos = visitInfoObjs.stream().map(i-> new LatestSumMax((String)i[0], ((Number)i[1]).longValue())).collect(Collectors.toList());
         return visitInfos;
     }
 
@@ -63,7 +64,7 @@ public class VisitInfoServiceImpl extends ServiceImpl<VisitInfoMapper, VisitInfo
      */
     @Override
     public List<VisitInfo> listLatestVisitInfo() {
-        List<VisitInfo> visitInfoList = baseMapper.listLatestVisitInfo();
+        List<VisitInfo> visitInfoList = visitInfoRepository.findTop10ByOrderByGmtCreateDesc();
         return visitInfoList;
     }
 

@@ -1,0 +1,14 @@
+-- ----------------------------
+-- Table structure for VISIT_INFO
+-- ----------------------------
+DROP TABLE IF EXISTS VISIT_INFO;
+
+CREATE TABLE VISIT_INFO(
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  fromIp VARCHAR(20) DEFAULT NULL,
+  fromUrl VARCHAR(256) DEFAULT NULL,
+  longUrl VARCHAR(256) NOT NULL,
+  shortUrl VARCHAR(20) NOT NULL,
+  gmtCreate DATETIME NOT NULL,
+  gmtModified DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
